@@ -9,14 +9,7 @@ namespace DataBaseService.Service
     {
         private ConnectionService db = new ConnectionService("localhost", "root", "root", "car");
 
-        private int id;
-
-        public int Id
-        {
-            get => id;
-            set => SetProperty(ref id, value);
-        }
-
+        // Löschen der Zeile in  der MySQL Datenbank
         public void DeleteRow(int id)
         {
             using (MySqlConnection connection = db.GetConnection())
@@ -26,6 +19,26 @@ namespace DataBaseService.Service
                 using (var command = new MySqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@id", id);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        //Aktuallisieren einer zeilen
+        public void UpdateRow(int id, string marke, string modell, DateTime baujahr, int km_stand, double preis)
+        {
+            using (MySqlConnection connection = db.GetConnection())
+            {
+                connection.Open();
+                string query = "UPDATE autos SET Marke = @Marke, Modell = @Modell, Baujahr = @Baujahr, KM_Stand = @KM_Stand, Preis = @Preis WHERE AID = @id";
+                using (var command = new MySqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@Marke", marke);
+                    command.Parameters.AddWithValue("@Modell", modell);
+                    command.Parameters.AddWithValue("@Baujahr", baujahr.ToString("yyyy-MM-dd"));
+                    command.Parameters.AddWithValue("@KM_Stand", km_stand);
+                    command.Parameters.AddWithValue("@Preis", preis);
                     command.ExecuteNonQuery();
                 }
             }

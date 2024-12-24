@@ -74,10 +74,16 @@ namespace VM.MainWindow
             set => SetProperty(ref selectedItem, value);
         }
 
-        public RelayCommand LoadDataCommand => new RelayCommand(execute => LoadData());
+        public RelayCommand ReadDataCommand => new RelayCommand(execute => ReadData());
+        public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteSelectedItem(), canExecute => CanDelete());
+        public RelayCommand CreateCommand => new RelayCommand(execute => Create(), canExecute => CanCreate());
+        public RelayCommand UpdateCommand => new RelayCommand(execute => UpdateSelectedItem(), canExecute => CanUpdate());
 
-        public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteSelectedItem());
-        public RelayCommand SaveCommand => new RelayCommand(execute => Save(), canExecute => CanSave());
+        private bool CanUpdate() => SelectedItem != null;
+
+        private bool CanCreate() => SelectedItem != null;
+
+        private bool CanDelete() => SelectedItem != null;
 
         private ConnectionService db = new ConnectionService("localhost", "root", "root", "car");
 
@@ -87,10 +93,10 @@ namespace VM.MainWindow
             DBservice = new Service();
             Items = new ObservableCollection<DataModel>(DBservice.GetItems());
             Baujahr = DateTime.Now.Date;
-            LoadData();
+            ReadData();
         }
 
-        public void LoadData()
+        public void ReadData()
         {
             Data.Clear();
             using (MySqlConnection connection = db.GetConnection())
@@ -118,7 +124,7 @@ namespace VM.MainWindow
             }
         }
 
-        public void Save()
+        public void Create()
         {
             string query = "INSERT INTO autos (Marke,Modell,Baujahr,KM_Stand,Preis) VALUES(@Marke,@Modell,@Baujahr,@KM_Stand,@Preis)";
 
@@ -138,6 +144,17 @@ namespace VM.MainWindow
             }
         }
 
+        private void UpdateSelectedItem()
+        {
+            if (SelectedItem == null)
+            {
+                return;
+            }
+
+            // Zeile aktualisieren
+            DBservice.UpdateRow(SelectedItem.Id, SelectedItem.Marke, SelectedItem.Modell, selectedItem.Baujahr, selectedItem.KM_Stand, selectedItem.Preis);
+        }
+
         private void DeleteSelectedItem()
         {
             if (SelectedItem == null)
@@ -152,12 +169,6 @@ namespace VM.MainWindow
             Items.Remove(SelectedItem);
 
             SelectedItem = null; // Auswahl zurücksetzen
-        }
-
-        private bool CanSave()
-        {
-            //Check
-            return true;
         }
     }
 }
