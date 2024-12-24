@@ -8,34 +8,49 @@ namespace VM.MainWindow
 {
     internal class MainWindowVM : VMBase
     {
-        private ObservableCollection<DataModel> data;
+        private ObservableCollection<DataModel?> data;
+        private DataModel? selectedItem;
+        private readonly Service dbService;
+        private DataModel? newData;
 
-        public ObservableCollection<DataModel> Data
+        public DataModel? NewData
+        {
+            get => newData;
+            set => SetProperty(ref newData, value);
+        }
+
+        public ObservableCollection<DataModel?> Data
 
         {
-            get => this.data;
+            get => data;
             set => SetProperty(ref data, value);
         }
 
-        private DataModel selectedItem;
-
-        public DataModel SelectedItem
+        public DataModel? SelectedItem
         {
             get => selectedItem;
-            set => SetProperty(ref selectedItem, value);
+            set
+            {
+                SetProperty(ref selectedItem, value);
+                if (selectedItem != null)
+                {
+                    NewData!.Marke = selectedItem.Marke;
+                    NewData!.Modell = selectedItem.Modell;
+                    NewData!.Baujahr = selectedItem.Baujahr;
+                    NewData!.KM_Stand = selectedItem.KM_Stand;
+                    NewData!.Preis = selectedItem.Preis;
+                }
+            }
         }
-
-        private readonly Service dbService;
-        public DataModel NewData { get; set; }
 
         public RelayCommand CreateCommand => new RelayCommand(execute => Create(), execute => CanCreate());
         public RelayCommand UpdateCommand => new RelayCommand(execute => UpdateSelectedItem(), canExecute => CanUpdate());
         public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteSelectedItem(), canExecute => CanDelete());
 
-        private bool CanCreate() => !string.IsNullOrEmpty(NewData.Marke) &&
-                               !string.IsNullOrEmpty(NewData.Modell) &&
-                               NewData.KM_Stand > 0 &&
-                               NewData.Preis > 0;
+        private bool CanCreate() => !string.IsNullOrEmpty(NewData?.Marke) &&
+                                    !string.IsNullOrEmpty(NewData?.Modell) &&
+                                    NewData.KM_Stand >= 0 &&
+                                    NewData.Preis >= 0;
 
         private bool CanUpdate() => SelectedItem != null;
 
@@ -45,7 +60,7 @@ namespace VM.MainWindow
         {
             dbService = new Service();
             NewData = new DataModel();
-            Data = new ObservableCollection<DataModel>(dbService.ReadData());
+            Data = new ObservableCollection<DataModel?>(dbService.ReadData()!);
             NewData = new DataModel { Baujahr = DateTime.Now };
         }
 
@@ -53,7 +68,7 @@ namespace VM.MainWindow
         {
             if (CanCreate())
             {
-                dbService.CreateRow(NewData); //Neue Zeile in der DB
+                dbService.CreateRow(NewData!); //Neue Zeile in der DB
                 Data.Add(NewData); // Neuer Eintrag in der UI
                 NewData = new DataModel(); // Neues Objekt für weitere Eingaben
             }
@@ -63,10 +78,19 @@ namespace VM.MainWindow
         {
             if (CanUpdate())
             {
-                // Zeile aktualisieren
-                dbService.UpdateRow(SelectedItem);
-                int index = Data.IndexOf(SelectedItem);
-                Data[index] = SelectedItem;
+                dbService.UpdateRow(SelectedItem!); // Zeilen Updaten in der DB
+                int index = Data.IndexOf(SelectedItem!); // Zeilen Updaten in der UI
+                if (index >= 0)
+                {
+                    Data[index] = new DataModel
+                    {
+                        Marke = SelectedItem!.Marke,
+                        Modell = SelectedItem!.Modell,
+                        KM_Stand = SelectedItem!.KM_Stand,
+                        Preis = SelectedItem!.Preis,
+                        Baujahr = SelectedItem!.Baujahr
+                    };
+                }
             }
         }
 
@@ -74,12 +98,8 @@ namespace VM.MainWindow
         {
             if (CanDelete())
             {
-                // Zeile aus der MySQL-Datenbank löschen
-                dbService.DeleteRow(SelectedItem.Id);
-
-                // Zeile aus der ObservableCollection entfernen
-                Data.Remove(SelectedItem);
-
+                dbService.DeleteRow(SelectedItem!.Id); // Zeile aus der DB löschen
+                Data.Remove(SelectedItem); // Zeile aus der UI löschen
                 SelectedItem = null; // Auswahl zurücksetzen
             }
         }

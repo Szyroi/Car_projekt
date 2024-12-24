@@ -9,6 +9,7 @@ namespace DataBaseService.Service
     {
         private ConnectionService db = new ConnectionService("localhost", "root", "root", "car");
 
+        // Hinzufügen einer Zeile
         public void CreateRow(DataModel auto)
         {
             string query = "INSERT INTO autos (Marke,Modell,Baujahr,KM_Stand,Preis) VALUES(@Marke,@Modell,@Baujahr,@KM_Stand,@Preis)";
@@ -29,7 +30,7 @@ namespace DataBaseService.Service
             }
         }
 
-        //Aktuallisieren einer zeilen
+        // Aktuallisieren von zeilen in der DB
         public void UpdateRow(DataModel auto)
         {
             using (MySqlConnection connection = db.GetConnection())
