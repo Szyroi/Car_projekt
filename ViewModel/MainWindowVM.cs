@@ -13,14 +13,7 @@ namespace VM.MainWindow
         private readonly Service dbService;
         private DataModel? newData;
 
-        public DataModel? NewData
-        {
-            get => newData;
-            set => SetProperty(ref newData, value);
-        }
-
         public ObservableCollection<DataModel?> Data
-
         {
             get => data;
             set => SetProperty(ref data, value);
@@ -43,12 +36,18 @@ namespace VM.MainWindow
             }
         }
 
-        public RelayCommand CreateCommand => new RelayCommand(execute => Create(), execute => CanCreate());
+        public DataModel? NewData
+        {
+            get => newData;
+            set => SetProperty(ref newData, value);
+        }
+
+        public RelayCommand CreateCommand => new RelayCommand(execute => Create(), canExecute => CanCreate());
         public RelayCommand UpdateCommand => new RelayCommand(execute => UpdateSelectedItem(), canExecute => CanUpdate());
         public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteSelectedItem(), canExecute => CanDelete());
 
-        private bool CanCreate() => !string.IsNullOrEmpty(NewData?.Marke) &&
-                                    !string.IsNullOrEmpty(NewData?.Modell) &&
+        private bool CanCreate() => string.IsNullOrEmpty(NewData?.Marke) &&
+                                    string.IsNullOrEmpty(NewData?.Modell) &&
                                     NewData.KM_Stand >= 0 &&
                                     NewData.Preis >= 0;
 
@@ -61,7 +60,6 @@ namespace VM.MainWindow
             dbService = new Service();
             NewData = new DataModel();
             Data = new ObservableCollection<DataModel?>(dbService.ReadData()!);
-            NewData = new DataModel { Baujahr = DateTime.Now };
         }
 
         public void Create()

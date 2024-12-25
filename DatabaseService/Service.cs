@@ -33,11 +33,11 @@ namespace DataBaseService.Service
         // Aktuallisieren von zeilen in der DB
         public void UpdateRow(DataModel auto)
         {
-            using (MySqlConnection connection = db.GetConnection())
+            using (MySqlConnection conn = db.GetConnection())
             {
-                connection.Open();
+                conn.Open();
                 string query = "UPDATE autos SET Marke = @Marke, Modell = @Modell, Baujahr = @Baujahr, KM_Stand = @KM_Stand, Preis = @Preis WHERE AID = @id";
-                using (var cmd = new MySqlCommand(query, connection))
+                using (var cmd = new MySqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@id", auto.Id);
                     cmd.Parameters.AddWithValue("@Marke", auto.Marke);
@@ -53,11 +53,11 @@ namespace DataBaseService.Service
         // Löschen der Zeile in  der MySQL Datenbank
         public void DeleteRow(int id)
         {
-            using (MySqlConnection connection = db.GetConnection())
+            using (MySqlConnection conn = db.GetConnection())
             {
-                connection.Open();
+                conn.Open();
                 string query = "DELETE FROM autos WHERE AID = @id";
-                using (var command = new MySqlCommand(query, connection))
+                using (var command = new MySqlCommand(query, conn))
                 {
                     command.Parameters.AddWithValue("@id", id);
                     command.ExecuteNonQuery();
@@ -69,11 +69,11 @@ namespace DataBaseService.Service
         public List<DataModel> ReadData()
         {
             var data = new List<DataModel>();
-            using (MySqlConnection connection = db.GetConnection())
+            using (MySqlConnection conn = db.GetConnection())
             {
-                connection.Open();
+                conn.Open();
                 string query = "SELECT AID, Marke, Modell, Baujahr, KM_Stand, Preis FROM autos";
-                using (MySqlCommand command = new MySqlCommand(query, connection))
+                using (MySqlCommand command = new MySqlCommand(query, conn))
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {

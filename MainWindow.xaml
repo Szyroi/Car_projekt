@@ -5,51 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Car_projekt"
         mc:Ignorable="d"
-         Height="450" Width="800">
+        Title="Car Projekt" Height="450" Width="800">
 
     <Border>
         <Grid>
-
             <!-- Globale Spalten Definition -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40*" />
                 <ColumnDefinition Width="30*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Daten -->
-            <Grid Grid.Column="0">
-                <DataGrid Name="Car_DataGrid" FontSize="13" FontWeight="SemiBold"
-                      ItemsSource="{Binding Data}"
-                      SelectedItem="{Binding SelectedItem}"
-                      AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Visibility="Hidden" Width="0.5*" />
-                        <DataGridTextColumn Header="Marke" Binding="{Binding Marke}" Width="*" />
-                        <DataGridTextColumn Header="Modell" Binding="{Binding Modell}" Width="*" />
-                        <DataGridTextColumn Header="Baujahr" Binding="{Binding Baujahr, StringFormat='dd.MM.yyyy'}" Width="*" />
-                        <DataGridTextColumn Header="KM Stand" Binding="{Binding KM_Stand}" Width="*" />
-                        <DataGridTextColumn Header="Preis" Binding="{Binding Preis}" Width="*" />
-                    </DataGrid.Columns>
-                </DataGrid>
-            </Grid>
+            <DataGrid Grid.Column="0" Name="DataGrid" FontSize="13" FontWeight="SemiBold"
+                                  ItemsSource="{Binding Data}"
+                                  SelectedItem="{Binding SelectedItem}"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  CanUserDeleteRows="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Visibility="Hidden" Width="*" />
+                    <DataGridTextColumn Header="Marke" Binding="{Binding Marke}" Width="*" />
+                    <DataGridTextColumn Header="Modell" Binding="{Binding Modell}" />
+                    <DataGridTextColumn Header="Baujahr" Binding="{Binding Baujahr, StringFormat='dd.MM.yyyy'}" Width="*" />
+                    <DataGridTextColumn Header="KM Stand" Binding="{Binding KM_Stand}" Width="*" />
+                    <DataGridTextColumn Header="Preis" Binding="{Binding Preis}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
 
             <!-- Editor -->
             <Grid Grid.Column="1">
-
-                <!-- Lokale Spalten Definition (Editor) -->
+                <!-- Lokale Zeilen Definition (Editor) -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="80*" />
                     <RowDefinition Height="20*" />
                 </Grid.RowDefinitions>
 
-                <!-- Lokale Zeilen Definition (Editor) -->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Row="0">
+                <StackPanel Grid.Row="0" Margin="10">
                     <Label Content="Marke" FontSize="13" FontWeight="Bold" />
-                    <TextBox Margin="5 0 5 0"  Text="{Binding SelectedItem.Marke, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Margin="5 0 5 0" Text="{Binding SelectedItem.Marke, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Label Content="Modell" FontSize="13" FontWeight="Bold" />
                     <TextBox Margin="5 0 5 0" Text="{Binding SelectedItem.Modell, UpdateSourceTrigger=PropertyChanged}" />
@@ -58,17 +50,17 @@
                     <DatePicker Margin="5 0 5 0" SelectedDate="{Binding SelectedItem.Baujahr, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Label Content="KM Stand" FontSize="13" FontWeight="Bold" />
-                    <TextBox Margin="5 0 5 0"  Text="{Binding SelectedItem.KM_Stand, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Margin="5 0 5 0" Text="{Binding SelectedItem.KM_Stand, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Label Content="Preis" FontSize="13" FontWeight="Bold" />
-                    <TextBox Margin="5 0 5 0"  Text="{Binding SelectedItem.Preis, UpdateSourceTrigger=PropertyChanged}" />
+                    <TextBox Margin="5 0 5 0" Text="{Binding SelectedItem.Preis, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <!-- CRUD buttons -->
+                <!-- CRUD Buttons -->
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Content="Hinzufügen" Command="{Binding CreateCommand}"  Margin="5" Width="70" Height="40" />
-                    <Button Content="Aktualisieren" Command="{Binding UpdateCommand}"  Margin="5" Width="75" Height="40" />
-                    <Button Content="Löschen" Command="{Binding DeleteCommand}" Margin="5" Width="70" Height="40" />
+                    <Button Content="Hinzufügen" Command="{Binding CreateCommand}" Margin="5" Width="90" Height="35" />
+                    <Button Content="Aktualisieren" Command="{Binding UpdateCommand}" Margin="5" Width="90" Height="35" />
+                    <Button Content="Löschen" Command="{Binding DeleteCommand}" Margin="5" Width="90" Height="35" />
                 </StackPanel>
             </Grid>
         </Grid>
