@@ -1,163 +1,105 @@
-﻿using DataBaseService.CProvider;
-using DataBaseService.Service;
+﻿using DataBaseService.Service;
 using Model.DataModel;
 using MVVM.RelayCommand;
 using MVVM.VMBase;
-using MySql.Data.MySqlClient;
 using System.Collections.ObjectModel;
 
 namespace VM.MainWindow
 {
     internal class MainWindowVM : VMBase
     {
-        private int id;
-        private string marke;
-        private string modell;
-        private DateTime baujahr;
-        private int km_stand;
-        private double preis;
+        private ObservableCollection<DataModel?> data;
+        private DataModel? selectedItem;
+        private readonly Service dbService;
+        private DataModel? newData;
 
-        public int Id
+        public ObservableCollection<DataModel?> Data
         {
-            get => id;
-            set => SetProperty(ref id, value);
-        }
-
-        public string Marke
-        {
-            get => marke;
-            set => SetProperty(ref marke, value);
-        }
-
-        public string Modell
-        {
-            get => modell;
-            set => SetProperty(ref modell, value);
-        }
-
-        public DateTime Baujahr
-        {
-            get => baujahr;
-            set => SetProperty(ref baujahr, value);
-        }
-
-        public int KM_Stand
-        {
-            get => km_stand;
-            set => SetProperty(ref km_stand, value);
-        }
-
-        public double Preis
-        {
-            get => preis;
-            set => SetProperty(ref preis, value);
-        }
-
-        private ObservableCollection<DataModel> data;
-
-        public ObservableCollection<DataModel> Data
-
-        {
-            get => this.data;
+            get => data;
             set => SetProperty(ref data, value);
         }
 
-        private readonly Service DBservice;
-
-        public ObservableCollection<DataModel> Items { get; set; }
-
-        private DataModel selectedItem;
-
-        public DataModel SelectedItem
+        public DataModel? SelectedItem
         {
             get => selectedItem;
-            set => SetProperty(ref selectedItem, value);
-        }
-
-        public RelayCommand LoadDataCommand => new RelayCommand(execute => LoadData());
-
-        public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteSelectedItem());
-        public RelayCommand SaveCommand => new RelayCommand(execute => Save(), canExecute => CanSave());
-
-        private ConnectionService db = new ConnectionService("localhost", "root", "root", "car");
-
-        public MainWindowVM()
-        {
-            Data = new ObservableCollection<DataModel>();
-            DBservice = new Service();
-            Items = new ObservableCollection<DataModel>(DBservice.GetItems());
-            Baujahr = DateTime.Now.Date;
-            LoadData();
-        }
-
-        public void LoadData()
-        {
-            Data.Clear();
-            using (MySqlConnection connection = db.GetConnection())
+            set
             {
-                connection.Open();
-                string query = "SELECT AID, Marke, Modell, Baujahr, KM_Stand, Preis FROM autos";
-                using (MySqlCommand command = new MySqlCommand(query, connection))
+                SetProperty(ref selectedItem, value);
+                if (selectedItem != null)
                 {
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Data.Add(new DataModel
-                            {
-                                Id = Convert.ToInt32(reader["AID"]),
-                                Marke = reader["Marke"].ToString(),
-                                Modell = reader["Modell"].ToString(),
-                                Baujahr = Convert.ToDateTime(reader["Baujahr"]),
-                                KM_Stand = Convert.ToInt32(reader["KM_Stand"]),
-                                Preis = Convert.ToDouble(reader["Preis"])
-                            });
-                        }
-                    }
+                    NewData!.Marke = selectedItem.Marke;
+                    NewData!.Modell = selectedItem.Modell;
+                    NewData!.Baujahr = selectedItem.Baujahr;
+                    NewData!.KM_Stand = selectedItem.KM_Stand;
+                    NewData!.Preis = selectedItem.Preis;
                 }
             }
         }
 
-        public void Save()
+        public DataModel? NewData
         {
-            string query = "INSERT INTO autos (Marke,Modell,Baujahr,KM_Stand,Preis) VALUES(@Marke,@Modell,@Baujahr,@KM_Stand,@Preis)";
+            get => newData;
+            set => SetProperty(ref newData, value);
+        }
 
-            using (MySqlConnection conn = db.GetConnection())
+        public RelayCommand CreateCommand => new RelayCommand(execute => Create(), canExecute => CanCreate());
+        public RelayCommand UpdateCommand => new RelayCommand(execute => UpdateSelectedItem(), canExecute => CanUpdate());
+        public RelayCommand DeleteCommand => new RelayCommand(execute => DeleteSelectedItem(), canExecute => CanDelete());
+
+        private bool CanCreate() => string.IsNullOrEmpty(NewData?.Marke) &&
+                                    string.IsNullOrEmpty(NewData?.Modell) &&
+                                    NewData.KM_Stand >= 0 &&
+                                    NewData.Preis >= 0;
+
+        private bool CanUpdate() => SelectedItem != null;
+
+        private bool CanDelete() => SelectedItem != null;
+
+        public MainWindowVM()
+        {
+            dbService = new Service();
+            NewData = new DataModel();
+            Data = new ObservableCollection<DataModel?>(dbService.ReadData()!);
+        }
+
+        public void Create()
+        {
+            if (CanCreate())
             {
-                conn.Open();
+                dbService.CreateRow(NewData!); //Neue Zeile in der DB
+                Data.Add(NewData); // Neuer Eintrag in der UI
+                NewData = new DataModel(); // Neues Objekt für weitere Eingaben
+            }
+        }
 
-                using (MySqlCommand cmd = new MySqlCommand(query, conn))
+        private void UpdateSelectedItem()
+        {
+            if (CanUpdate())
+            {
+                dbService.UpdateRow(SelectedItem!); // Zeilen Updaten in der DB
+                int index = Data.IndexOf(SelectedItem!); // Zeilen Updaten in der UI
+                if (index >= 0)
                 {
-                    cmd.Parameters.AddWithValue("@Marke", Marke);
-                    cmd.Parameters.AddWithValue("@Modell", Modell);
-                    cmd.Parameters.AddWithValue("@Baujahr", Baujahr.ToString("yyyy-MM-dd"));
-                    cmd.Parameters.AddWithValue("@KM_Stand", KM_Stand);
-                    cmd.Parameters.AddWithValue("@Preis", Preis);
-                    cmd.ExecuteNonQuery();
+                    Data[index] = new DataModel
+                    {
+                        Marke = SelectedItem!.Marke,
+                        Modell = SelectedItem!.Modell,
+                        KM_Stand = SelectedItem!.KM_Stand,
+                        Preis = SelectedItem!.Preis,
+                        Baujahr = SelectedItem!.Baujahr
+                    };
                 }
             }
         }
 
         private void DeleteSelectedItem()
         {
-            if (SelectedItem == null)
+            if (CanDelete())
             {
-                return;
+                dbService.DeleteRow(SelectedItem!.Id); // Zeile aus der DB löschen
+                Data.Remove(SelectedItem); // Zeile aus der UI löschen
+                SelectedItem = null; // Auswahl zurücksetzen
             }
-
-            // Zeile aus der MySQL-Datenbank löschen
-            DBservice.DeleteRow(SelectedItem.Id);
-
-            // Zeile aus der ObservableCollection entfernen
-            Items.Remove(SelectedItem);
-
-            SelectedItem = null; // Auswahl zurücksetzen
-        }
-
-        private bool CanSave()
-        {
-            //Check
-            return true;
         }
     }
 }
