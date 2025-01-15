@@ -2,14 +2,25 @@
 
 namespace Model.DataModel
 {
-    internal class DataModel : VMBase
+    /// <summary>
+    /// POCOS
+    /// </summary>
+    internal class Car : VMBase
     {
+        /// <summary>
+        /// Private Backing Fields
+        /// </summary>
+
         private int id;
         private string? marke;
         private string? modell;
-        private DateTime baujahr;
+        private DateTime baujahr = DateTime.Now; // DateTime.Now ist der Standartwert
         private int km_Stand;
         private double preis;
+
+        /// <summary>
+        /// Public Props SetProperty Methode Benachrichtig die UI bei Veränderungen.
+        /// </summary>
 
         public int Id
         {

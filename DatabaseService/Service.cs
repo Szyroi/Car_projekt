@@ -7,10 +7,16 @@ namespace DataBaseService.Service
 {
     internal class Service : VMBase
     {
+        // Datenbank verbindung (IP,Username,Passwort,Datenbank)
         private ConnectionService db = new ConnectionService("localhost", "root", "root", "car");
 
-        // Hinzufügen einer Zeile
-        public void CreateRow(DataModel auto)
+        #region CreateRow()
+
+        /// <summary>
+        /// Hinzufügen einer Zeile in der DB
+        /// </summary>
+        /// <param name="auto"></param>
+        public void CreateRow(Car auto)
         {
             string query = "INSERT INTO autos (Marke,Modell,Baujahr,KM_Stand,Preis) VALUES(@Marke,@Modell,@Baujahr,@KM_Stand,@Preis)";
 
@@ -30,8 +36,15 @@ namespace DataBaseService.Service
             }
         }
 
-        // Aktuallisieren von zeilen in der DB
-        public void UpdateRow(DataModel auto)
+        #endregion CreateRow()
+
+        #region UpdateRow()
+
+        /// <summary>
+        /// Aktuallisieren von zeilen in der DB
+        /// </summary>
+        /// <param name="auto"></param>
+        public void UpdateRow(Car auto)
         {
             using (MySqlConnection conn = db.GetConnection())
             {
@@ -50,7 +63,14 @@ namespace DataBaseService.Service
             }
         }
 
-        // Löschen der Zeile in  der MySQL Datenbank
+        #endregion UpdateRow()
+
+        #region DeleteRow()
+
+        /// <summary>
+        /// Löschen der Zeile in der DB
+        /// </summary>
+        /// <param name="id"></param>
         public void DeleteRow(int id)
         {
             using (MySqlConnection conn = db.GetConnection())
@@ -65,10 +85,17 @@ namespace DataBaseService.Service
             }
         }
 
-        // Daten aus der MySQL-Datenbank laden
-        public List<DataModel> ReadData()
+        #endregion DeleteRow()
+
+        #region RedData()
+
+        /// <summary>
+        /// Daten aus der DB laden
+        /// </summary>
+        /// <returns></returns>
+        public List<Car> ReadData()
         {
-            var data = new List<DataModel>();
+            var data = new List<Car>();
             using (MySqlConnection conn = db.GetConnection())
             {
                 conn.Open();
@@ -79,7 +106,7 @@ namespace DataBaseService.Service
                 {
                     while (reader.Read())
                     {
-                        data.Add(new DataModel
+                        data.Add(new Car
                         {
                             Id = reader.GetInt32("AID"),
                             Marke = reader.GetString("Marke"),
@@ -93,5 +120,7 @@ namespace DataBaseService.Service
             }
             return data;
         }
+
+        #endregion RedData()
     }
 }

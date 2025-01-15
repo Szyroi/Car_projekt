@@ -2,6 +2,9 @@
 
 namespace MVVM.RelayCommand
 {
+    /// <summary>
+    /// Logik der RelayCommands für die Buttons
+    /// </summary>
     internal class RelayCommand : ICommand
     {
         private Action<object?> execute;

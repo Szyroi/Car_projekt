@@ -2,6 +2,9 @@
 
 namespace DataBaseService.CProvider
 {
+    /// <summary>
+    /// Helper Class für Globel verbindung in den datein
+    /// </summary>
     public class ConnectionService
     {
         private string connectionString { get; set; }
