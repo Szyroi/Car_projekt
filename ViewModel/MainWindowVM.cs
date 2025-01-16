@@ -82,7 +82,7 @@ namespace VM.MainWindow
         #region Methoden
 
         /// <summary>
-        /// Logik zum erstellen neuer Datensätze in der UI & DB
+        /// Logik zum Erstellen neuer Datensätze in der UI & DB
         /// </summary>
 
         public void CreateItem()

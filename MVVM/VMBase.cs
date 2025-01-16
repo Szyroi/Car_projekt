@@ -7,7 +7,7 @@ namespace MVVM.VMBase
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        //OnPropertyChanged benarichtigt UI bei veränderung
+        //OnPropertyChanged benachrichtigt UI bei veränderungen
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
