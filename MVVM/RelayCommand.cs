@@ -31,5 +31,10 @@ namespace MVVM.RelayCommand
         {
             execute(parameter);
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }
