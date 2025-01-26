@@ -1,0 +1,36 @@
+name: Build and Test WPF Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    # Checkout Code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Set up .NET
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 9.0 # Passe die Version an deine .NET-Version an
+
+    # Restore dependencies
+    - name: Restore Dependencies
+      run: dotnet restore
+
+    # Build Solution
+    - name: Build Solution
+      run: dotnet build --configuration Release
+
+    # Run Tests (optional)
+    - name: Run Tests
+      run: dotnet test --no-build --verbosity normal
