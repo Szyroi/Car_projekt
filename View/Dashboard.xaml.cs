@@ -8,7 +8,7 @@ namespace Car_projekt.View
         public Dashboard()
         {
             InitializeComponent();
-            DataContext = new MainWindowVM();
+            DataContext = new DashboardVM();
         }
     }
 }

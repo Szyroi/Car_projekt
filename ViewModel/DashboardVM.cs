@@ -12,7 +12,7 @@ namespace VM.MainWindow
     /// <summary>
     /// ViewModel vom MainWindow
     /// </summary>
-    internal class MainWindowVM : VMBase, INotifyDataErrorInfo
+    internal class DashboardVM : VMBase, INotifyDataErrorInfo
     {
         #region Fields und Props
 
@@ -70,7 +70,7 @@ namespace VM.MainWindow
 
         #region Constructor
 
-        public MainWindowVM()
+        public DashboardVM()
         {
             dbService = new Service();
             NewData = new Car();
