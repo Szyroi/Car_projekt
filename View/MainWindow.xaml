@@ -22,10 +22,12 @@
                       CanUserAddRows="False"
                       CanUserDeleteRows="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Visibility="Hidden" Width="*" />
+                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" Visibility="Hidden"
+                                        Width="*" />
                     <DataGridTextColumn Header="Marke" Binding="{Binding Marke}" Width="*" />
                     <DataGridTextColumn Header="Modell" Binding="{Binding Modell}" />
-                    <DataGridTextColumn Header="Baujahr" Binding="{Binding Baujahr, StringFormat='dd.MM.yyyy'}" Width="*" />
+                    <DataGridTextColumn Header="Baujahr" Binding="{Binding Baujahr, StringFormat='dd.MM.yyyy'}"
+                                        Width="*" />
                     <DataGridTextColumn Header="KM Stand" Binding="{Binding KM_Stand}" Width="*" />
                     <DataGridTextColumn Header="Preis" Binding="{Binding Preis}" Width="*" />
                 </DataGrid.Columns>
@@ -41,22 +43,29 @@
 
                 <StackPanel Grid.Row="0" Margin="10">
                     <Label Content="Marke" FontSize="13" FontWeight="Bold" />
-                    <TextBox Margin="5 0 5 0" Text="{Binding NewData.Marke, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                    <TextBox Margin="5 0 5 0"
+                             Text="{Binding NewData.Marke, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="Modell" FontSize="13" FontWeight="Bold" />
-                    <TextBox Margin="5 0 5 0" Text="{Binding NewData.Modell, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                    <TextBox Margin="5 0 5 0"
+                             Text="{Binding NewData.Modell, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="Baujahr" FontSize="13" FontWeight="Bold" />
-                    <DatePicker Margin="5 0 5 0" SelectedDate="{Binding NewData.Baujahr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                    <DatePicker Margin="5 0 5 0"
+                                SelectedDate="{Binding NewData.Baujahr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="KM Stand" FontSize="13" FontWeight="Bold" />
-                    <TextBox Margin="5 0 5 0" Text="{Binding NewData.KM_Stand, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                    <TextBox Margin="5 0 5 0"
+                             Text="{Binding NewData.KM_Stand, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="Preis" FontSize="13" FontWeight="Bold" />
-                    <TextBox Margin="5 0 5 0" Text="{Binding NewData.Preis, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                    <TextBox Margin="5 0 5 0"
+                             Text="{Binding NewData.Preis, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <!-- Fehleranzeige -->
-                    <TextBlock Foreground="Red" Text="{Binding (Validation.Errors), RelativeSource={RelativeSource Self}}" Margin="10,300,10,10" />
+                    <TextBlock Foreground="Red"
+                               Text="{Binding (Validation.Errors), RelativeSource={RelativeSource Self}}"
+                               Margin="10,300,10,10" />
                 </StackPanel>
 
                 <!-- CRUD Buttons -->

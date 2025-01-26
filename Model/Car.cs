@@ -19,7 +19,7 @@ namespace Model.DataModel
         private double preis;
 
         /// <summary>
-        /// Public Props SetProperty Methode Benachrichtig die UI bei Veränderungen.
+        /// Public Props SetProperty Methode Benachrichtigt die UI bei Veränderungen.
         /// </summary>
 
         public int Id

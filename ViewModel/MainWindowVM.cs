@@ -12,14 +12,15 @@ namespace VM.MainWindow
     /// <summary>
     /// ViewModel vom MainWindow
     /// </summary>
-
     internal class MainWindowVM : VMBase, INotifyDataErrorInfo
     {
         #region Fields und Props
 
+        public ObservableCollection<Car> Data { get; set; }
         private Car selectedItem;
         private Car newData;
         private readonly Service dbService;
+
 
         public Car NewData
         {
@@ -29,12 +30,11 @@ namespace VM.MainWindow
                 if (newData != value)
                 {
                     newData = value;
-                    OnPropertyChanged(nameof(NewData));
+                    OnPropertyChanged();
                 }
             }
         }
 
-        public ObservableCollection<Car> Data { get; set; }
 
         public Car SelectedItem
         {
@@ -84,7 +84,6 @@ namespace VM.MainWindow
         /// <summary>
         /// Logik zum Erstellen neuer Datensätze in der UI & DB
         /// </summary>
-
         public void CreateItem()
         {
             ValidateNewData(); // Validierung der Daten
@@ -92,12 +91,12 @@ namespace VM.MainWindow
             if (HasErrors)
             {
                 MessageBox.Show("Es gibt Fehler in den Eingabedaten. Bitte korrigieren Sie diese.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;  // Fehler verhindern das Erstellen des Datensatzes
+                return; // Fehler verhindern das Erstellen des Datensatzes
             }
 
-            dbService.CreateRow(NewData);  // Datensatz wird in die DB eingefügt
-            Data.Add(NewData);  // Datensatz wird in der UI hinzugefügt
-            NewData = new Car();  // Neues leeres Car-Objekt
+            dbService.CreateRow(NewData); // Datensatz wird in die DB eingefügt
+            Data.Add(NewData); // Datensatz wird in der UI hinzugefügt
+            NewData = new Car(); // Neues leeres Car-Objekt
         }
 
         /// <summary>
@@ -173,7 +172,7 @@ namespace VM.MainWindow
         // Validierungslogik
         private void ValidateNewData()
         {
-            ClearErrors();  // Löschen aller Fehler
+            ClearErrors(); // Löschen aller Fehler
 
             // Validierungen der Felder
             if (string.IsNullOrWhiteSpace(NewData?.Marke))

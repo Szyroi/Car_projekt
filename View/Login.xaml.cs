@@ -1,13 +1,14 @@
 ﻿using System.Windows;
 using VM.Login;
 
-namespace Car_projekt.View;
-
-public partial class Login : Window
+namespace Car_projekt.View
 {
-    public Login()
+    public partial class Login : Window
     {
-        InitializeComponent();
-        DataContext = new LoginVm();
+        public Login()
+        {
+            InitializeComponent();
+            DataContext = new LoginVM();
+        }
     }
 }
