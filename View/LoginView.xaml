@@ -1,4 +1,4 @@
-﻿<Window x:Class="Car_projekt.View.Login"
+﻿<Window x:Class="Car_projekt.View.LoginView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +6,7 @@
         xmlns:components="clr-namespace:Car_projekt.Components"
         mc:Ignorable="d"
         Title="Login" Height="450" Width="400">
-    <Border>
+    <Border CornerRadius="10">
         <StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>

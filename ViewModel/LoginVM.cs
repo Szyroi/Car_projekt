@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Car_projekt.DatabaseService;
+using Car_projekt.View;
 using MVVM.RelayCommand;
 using MVVM.VMBase;
 
@@ -37,11 +38,20 @@ namespace VM.Login
         {
         }
 
+        private void OpenDashboard()
+        {
+            // Öffne das Dashboard-Fenster
+            var dashboardWindow = new Dashboard();
+            dashboardWindow.Show();
+            Application.Current.MainWindow.Close();
+        }
+
         public void Login()
         {
             if (AuthService.LoginUser(Username, Password))
             {
-                MessageBox.Show("Login erfolgreich!", "Erfolg", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                OpenDashboard();
             }
             else
             {

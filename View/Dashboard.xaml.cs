@@ -3,9 +3,9 @@ using VM.MainWindow;
 
 namespace Car_projekt.View
 {
-    public partial class MainWindow : Window
+    public partial class Dashboard : Window
     {
-        public MainWindow()
+        public Dashboard()
         {
             InitializeComponent();
             DataContext = new MainWindowVM();

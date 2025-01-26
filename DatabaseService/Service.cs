@@ -7,7 +7,7 @@ namespace DataBaseService.Service
 {
     internal class Service : VMBase
     {
-        private ConnectionService db = new ConnectionService("localhost", "root", "Root", "car");
+        private ConnectionService db = new ConnectionService("localhost", "root", "root", "car");
 
         #region CreateRow()
 

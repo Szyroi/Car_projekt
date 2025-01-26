@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.Windows;
+using Car_projekt.View;
 
 namespace Car_projekt
 {
@@ -9,6 +10,6 @@ namespace Car_projekt
     /// </summary>
     public partial class App : Application
     {
-    }
 
+    }
 }
