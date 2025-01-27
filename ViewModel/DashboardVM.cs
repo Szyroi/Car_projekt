@@ -1,18 +1,19 @@
-﻿using DataBaseService.Service;
+﻿using System.Collections;
+using DataBaseService.Service;
 using Model.DataModel;
 using MVVM.RelayCommand;
 using MVVM.VMBase;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows;
+using Helper.ValidationHelper;
+
 
 namespace VM.MainWindow
 {
     /// <summary>
     /// ViewModel vom MainWindow
     /// </summary>
-    internal class DashboardVM : VMBase, INotifyDataErrorInfo
+    internal class DashboardVM : VMBase
     {
         #region Fields und Props
 
@@ -21,17 +22,14 @@ namespace VM.MainWindow
         private Car newData;
         private readonly Service dbService;
 
-
         public Car NewData
         {
             get => newData;
             set
             {
-                if (newData != value)
-                {
-                    newData = value;
-                    OnPropertyChanged();
-                }
+                newData = value;
+                OnPropertyChanged();
+                ValidateNewData();
             }
         }
 
@@ -41,7 +39,8 @@ namespace VM.MainWindow
             get => selectedItem;
             set
             {
-                SetProperty(ref selectedItem, value);
+                selectedItem = value;
+                OnPropertyChanged();
                 if (selectedItem != null)
                 {
                     NewData!.Marke = selectedItem.Marke;
@@ -70,38 +69,68 @@ namespace VM.MainWindow
 
         #region Constructor
 
+        public ValidationHelper Helper { get; } = new ValidationHelper();
+
+        public bool HasErrors => Helper.HasErrors;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        public IEnumerable GetErrors(string? propertyName) => Helper.GetErrors(propertyName);
+
         public DashboardVM()
         {
             dbService = new Service();
             NewData = new Car();
             Data = new ObservableCollection<Car>(dbService.ReadData()!);
+            Helper.ErrorsChanged += (_, e) =>
+            {
+                OnPropertyChanged();
+                ErrorsChanged?.Invoke(this, e);
+            };
         }
 
         #endregion Constructor
 
+
         #region Methoden
 
-        /// <summary>
-        /// Logik zum Erstellen neuer Datensätze in der UI & DB
-        /// </summary>
+
+        private void ValidateNewData()
+        {
+            Helper.ClearErrors();
+
+            if (string.IsNullOrWhiteSpace(NewData.Marke))
+            {
+                Helper.AddError("Bitte geben sie valide Zeichen ein!");
+            }
+            if (string.IsNullOrEmpty(NewData.Modell))
+            {
+                Helper.AddError("Bitte geben Sie einen Modell ein!");
+            }
+            if (NewData.Baujahr.Year < 1900)
+            {
+                Helper.AddError("Bitte geben Sie einen Baujahr ein!");
+            }
+            if (NewData.KM_Stand <= 0)
+            {
+                Helper.AddError("Bitte geben Sie einen KM_Stand ein!");
+            }
+            if (NewData.Preis <= 0)
+            {
+                Helper.AddError("Bitte geben Sie einen Preis ein!");
+            }
+        }
+
+
+
+
         public void CreateItem()
         {
-            ValidateNewData(); // Validierung der Daten
-
-            if (HasErrors)
-            {
-                MessageBox.Show("Es gibt Fehler in den Eingabedaten. Bitte korrigieren Sie diese.", "Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
-                return; // Fehler verhindern das Erstellen des Datensatzes
-            }
-
             dbService.CreateRow(NewData); // Datensatz wird in die DB eingefügt
             Data.Add(NewData); // Datensatz wird in der UI hinzugefügt
             NewData = new Car(); // Neues leeres Car-Objekt
         }
 
-        /// <summary>
-        /// Logik für das Updaten von Datensätzen in der DB
-        /// </summary>
+
         private void UpdateSelectedItem()
         {
             if (CanUpdate())
@@ -122,9 +151,7 @@ namespace VM.MainWindow
             }
         }
 
-        /// <summary>
-        /// Löschen der Spalte in der UI & DB
-        /// </summary>
+
         private void DeleteSelectedItem()
         {
             if (CanDelete())
@@ -150,83 +177,5 @@ namespace VM.MainWindow
         }
 
         #endregion Methoden
-
-        #region INotifyDataErrorInfo Implementierung
-
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-        // Speichern der Errors
-        private readonly Dictionary<string, List<string>> errors = new();
-
-        public bool HasErrors => errors.Any();
-
-        public IEnumerable GetErrors(string propertyName)
-        {
-            if (errors.ContainsKey(propertyName))
-            {
-                return errors[propertyName];
-            }
-            return null;
-        }
-
-        // Validierungslogik
-        private void ValidateNewData()
-        {
-            ClearErrors(); // Löschen aller Fehler
-
-            // Validierungen der Felder
-            if (string.IsNullOrWhiteSpace(NewData?.Marke))
-            {
-                AddError(nameof(NewData.Marke), "Marke darf nicht leer sein.");
-            }
-
-            if (string.IsNullOrWhiteSpace(NewData?.Modell))
-            {
-                AddError(nameof(NewData.Modell), "Modell darf nicht leer sein.");
-            }
-
-            if (NewData?.Baujahr == null)
-            {
-                AddError(nameof(NewData.Baujahr), "Baujahr darf nicht null sein.");
-            }
-
-            if (NewData?.KM_Stand == null || NewData.KM_Stand < 0)
-            {
-                AddError(nameof(NewData.KM_Stand), "Kilometerstand muss eine positive Zahl sein.");
-            }
-
-            if (NewData?.Preis == null || NewData.Preis <= 0)
-            {
-                AddError(nameof(NewData.Preis), "Preis muss eine positive Zahl sein.");
-            }
-
-            // Benachrichtige UI über Fehleränderungen
-            OnErrorsChanged(nameof(NewData));
-        }
-
-        // Fehler für eine Eigenschaft hinzufügen
-        private void AddError(string propertyName, string errorMessage)
-        {
-            if (!errors.ContainsKey(propertyName))
-            {
-                errors[propertyName] = new List<string>();
-            }
-
-            errors[propertyName].Add(errorMessage);
-        }
-
-        // Fehler für eine Eigenschaft löschen
-        private void ClearErrors()
-        {
-            errors.Clear();
-        }
-
-        // Event auslösen, wenn Fehler geändert werden
-        private void OnErrorsChanged(string propertyName)
-        {
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-        }
-
-        #endregion INotifyDataErrorInfo Implementierung
     }
 }

@@ -5,6 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Car Projekt" Height="450" Width="800">
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="ToolTip"
+                    Value="{Binding (Validation.Errors).CurrentItem.ErrorContent,
+                RelativeSource={RelativeSource Self}}" />
+        </Style>
+    </Window.Resources>
 
     <Border CornerRadius="10">
         <Grid>
@@ -43,28 +50,29 @@
                 <StackPanel Grid.Row="0" Margin="10">
                     <Label Content="Marke" FontSize="13" FontWeight="Bold" />
                     <TextBox Margin="5 0 5 0"
-                             Text="{Binding NewData.Marke, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                             ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent,RelativeSource={RelativeSource Self}}"
+                             Text="{Binding NewData.Marke, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="Modell" FontSize="13" FontWeight="Bold" />
                     <TextBox Margin="5 0 5 0"
-                             Text="{Binding NewData.Modell, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                             ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent,RelativeSource={RelativeSource Self}}"
+                             Text="{Binding NewData.Modell, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="Baujahr" FontSize="13" FontWeight="Bold" />
                     <DatePicker Margin="5 0 5 0"
-                                SelectedDate="{Binding NewData.Baujahr, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                                ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent,RelativeSource={RelativeSource Self}}"
+                                SelectedDate="{Binding NewData.Baujahr,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="KM Stand" FontSize="13" FontWeight="Bold" />
                     <TextBox Margin="5 0 5 0"
-                             Text="{Binding NewData.KM_Stand, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                             ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent,RelativeSource={RelativeSource Self}}"
+                             Text="{Binding NewData.KM_Stand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
                     <Label Content="Preis" FontSize="13" FontWeight="Bold" />
                     <TextBox Margin="5 0 5 0"
+                             ToolTip="{Binding (Validation.Errors).CurrentItem.ErrorContent,RelativeSource={RelativeSource Self}}"
                              Text="{Binding NewData.Preis, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
 
-                    <!-- Fehleranzeige -->
-                    <TextBlock Foreground="Red"
-                               Text="{Binding (Validation.Errors), RelativeSource={RelativeSource Self}}"
-                               Margin="10,300,10,10" />
                 </StackPanel>
 
                 <!-- CRUD Buttons -->

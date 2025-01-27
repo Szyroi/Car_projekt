@@ -41,7 +41,7 @@ namespace Car_projekt.DatabaseService
 
                 return false; // Benutzername oder Passwort falsch
             }
-            catch (MySqlException ex )
+            catch (MySqlException ex)
             {
                 MessageBox.Show(ex.Message);
                 return false; // Fehler beim Login

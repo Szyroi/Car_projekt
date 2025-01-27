@@ -50,7 +50,6 @@ namespace VM.Login
         {
             if (AuthService.LoginUser(Username, Password))
             {
-
                 OpenDashboard();
             }
             else

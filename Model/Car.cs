@@ -18,44 +18,64 @@ namespace Model.DataModel
         private int km_Stand;
         private double preis;
 
-        /// <summary>
-        /// Public Props SetProperty Methode Benachrichtigt die UI bei Veränderungen.
-        /// </summary>
-
         public int Id
         {
             get => id;
-            set => SetProperty(ref id, value);
+            set
+            {
+                id = value;
+                OnPropertyChanged();
+            }
         }
 
         public string? Marke
         {
             get => marke;
-            set => SetProperty(ref marke, value);
+            set
+            {
+                marke = value;
+                OnPropertyChanged();
+            }
         }
 
         public string? Modell
         {
             get => modell;
-            set => SetProperty(ref modell, value);
+            set
+            {
+                modell = value;
+                OnPropertyChanged();
+            }
         }
 
         public DateTime Baujahr
         {
             get => baujahr;
-            set => SetProperty(ref baujahr, value);
+            set
+            {
+                baujahr = value;
+                OnPropertyChanged();
+            }
         }
 
         public int KM_Stand
         {
             get => km_Stand;
-            set => SetProperty(ref km_Stand, value);
+            set
+            {
+                km_Stand = value;
+                OnPropertyChanged();
+            }
         }
 
         public double Preis
         {
             get => preis;
-            set => SetProperty(ref preis, value);
+            set
+            {
+                preis = value;
+                OnPropertyChanged();
+            }
         }
     }
 }

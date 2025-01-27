@@ -105,15 +105,16 @@ namespace DataBaseService.Service
                 {
                     while (reader.Read())
                     {
-                        data.Add(new Car
-                        {
-                            Id = reader.GetInt32("AID"),
-                            Marke = reader.GetString("Marke"),
-                            Modell = reader.GetString("Modell"),
-                            Baujahr = reader.GetDateTime("Baujahr"),
-                            KM_Stand = reader.GetInt32("KM_Stand"),
-                            Preis = reader.GetDouble("Preis")
-                        });
+                        data.Add(
+                            new Car
+                            {
+                                Id = reader.GetInt32("AID"),
+                                Marke = reader.GetString("Marke"),
+                                Modell = reader.GetString("Modell"),
+                                Baujahr = reader.GetDateTime("Baujahr"),
+                                KM_Stand = reader.GetInt32("KM_Stand"),
+                                Preis = reader.GetDouble("Preis")
+                            });
                     }
                 }
             }
