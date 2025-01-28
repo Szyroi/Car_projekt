@@ -93,7 +93,6 @@ namespace VM.MainWindow
 
         #region Methoden
 
-
         private void ValidateNewData()
         {
             Helper.ClearErrors();

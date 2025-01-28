@@ -33,11 +33,7 @@ namespace VM.Login
 
         public RelayCommand LoginCommand => new RelayCommand(execute => Login());
         public RelayCommand RegisterCommand => new RelayCommand(execute => Register());
-
-        public LoginVM()
-        {
-        }
-
+        
         private void OpenDashboard()
         {
             // Öffne das Dashboard-Fenster
@@ -46,7 +42,7 @@ namespace VM.Login
             Application.Current.MainWindow.Close();
         }
 
-        public void Login()
+        private void Login()
         {
             if (AuthService.LoginUser(Username, Password))
             {
